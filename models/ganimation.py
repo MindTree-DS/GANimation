@@ -7,7 +7,7 @@ from .models import BaseModel
 from networks.networks import NetworksFactory
 import os
 import numpy as np
-
+# import pdb;pdb.set_trace()
 
 class GANimation(BaseModel):
     def __init__(self, opt):
@@ -103,9 +103,9 @@ class GANimation(BaseModel):
         self._input_real_img_path = input['real_img_path']
 
         if len(self._gpu_ids) > 0:
-            self._input_real_img = self._input_real_img.cuda(self._gpu_ids[0], async=True)
-            self._input_real_cond = self._input_real_cond.cuda(self._gpu_ids[0], async=True)
-            self._input_desired_cond = self._input_desired_cond.cuda(self._gpu_ids[0], async=True)
+            self._input_real_img = self._input_real_img.cuda(self._gpu_ids[0], non_blocking=True)
+            self._input_real_cond = self._input_real_cond.cuda(self._gpu_ids[0], non_blocking=True) #async=True
+            self._input_desired_cond = self._input_desired_cond.cuda(self._gpu_ids[0], non_blocking=True)
 
     def set_train(self):
         self._G.train()
@@ -123,9 +123,13 @@ class GANimation(BaseModel):
     def forward(self, keep_data_for_visuals=False, return_estimates=False):
         if not self._is_train:
             # convert tensor to variables
-            real_img = Variable(self._input_real_img, volatile=True)
-            real_cond = Variable(self._input_real_cond, volatile=True)
-            desired_cond = Variable(self._input_desired_cond, volatile=True)
+            with torch.no_grad():
+                real_img = Variable(self._input_real_img)
+                real_cond = Variable(self._input_real_cond)
+                desired_cond = Variable(self._input_desired_cond)
+            # real_img = Variable(self._input_real_img, volatile=True)
+            # real_cond = Variable(self._input_real_cond, volatile=True)
+            # desired_cond = Variable(self._input_desired_cond, volatile=True)
 
             # generate fake images
             fake_imgs, fake_img_mask = self._G.forward(real_img, desired_cond)
@@ -198,9 +202,19 @@ class GANimation(BaseModel):
     def optimize_parameters(self, train_generator=True, keep_data_for_visuals=False):
         if self._is_train:
             # convert tensor to variables
+            print("input_real_img.size : " , (self._input_real_img.size(0))) #@@@@@@@@
             self._B = self._input_real_img.size(0)
+
+            print((len(self._input_real_img))) #@@@@@@@@
+            # print((self._input_real_img))  # @@@@@@@@
             self._real_img = Variable(self._input_real_img)
+
+            print((len(self._input_real_cond))) #@@@@@@@@
+            # print((self._input_real_cond))  # @@@@@@@@
             self._real_cond = Variable(self._input_real_cond)
+
+            print((len(self._input_desired_cond))) #@@@@@@@@
+            # print((self._input_desired_cond))  # @@@@@@@@
             self._desired_cond = Variable(self._input_desired_cond)
 
             # train D
@@ -214,9 +228,11 @@ class GANimation(BaseModel):
             loss_D_gp.backward()
             self._optimizer_D.step()
 
+
             # train G
             if train_generator:
                 loss_G = self._forward_G(keep_data_for_visuals)
+                breakpoint()
                 self._optimizer_G.zero_grad()
                 loss_G.backward()
                 self._optimizer_G.step()
@@ -225,8 +241,16 @@ class GANimation(BaseModel):
         # generate fake images
         fake_imgs, fake_img_mask = self._G.forward(self._real_img, self._desired_cond)
         fake_img_mask = self._do_if_necessary_saturate_mask(fake_img_mask, saturate=self._opt.do_saturate_mask)
-        fake_imgs_masked = fake_img_mask * self._real_img + (1 - fake_img_mask) * fake_imgs
 
+        # print(len(fake_img_mask), len(self._real_img), len(fake_imgs)) #@@@@@@@@@@@@@@@@@@@
+
+        # print(fake_img_mask.shape)
+        # print(fake_imgs.shape)
+        # print(self._real_img.shape)
+
+        # pdb.set_trace()
+
+        fake_imgs_masked = fake_img_mask * self._real_img + (1 - fake_img_mask) * fake_imgs
         # D(G(Ic1, c2)*M) masked
         d_fake_desired_img_masked_prob, d_fake_desired_img_masked_cond = self._D.forward(fake_imgs_masked)
         self._loss_g_masked_fake = self._compute_loss_D(d_fake_desired_img_masked_prob, True) * self._opt.lambda_D_prob

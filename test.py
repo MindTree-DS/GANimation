@@ -13,6 +13,7 @@ import numpy as np
 from models.models import ModelsFactory
 from options.test_options import TestOptions
 
+
 class MorphFacesInTheWild:
     def __init__(self, opt):
         self._opt = opt
@@ -28,6 +29,7 @@ class MorphFacesInTheWild:
         morphed_img = self._img_morph(img, expresion)
         output_name = '%s_out.png' % os.path.basename(img_path)
         self._save_img(morphed_img, output_name)
+
 
     def _img_morph(self, img, expresion):
         bbs = face_recognition.face_locations(img)

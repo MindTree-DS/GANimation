@@ -37,7 +37,8 @@ class Train:
             epoch_start_time = time.time()
 
             # train epoch
-            self._train_epoch(i_epoch)
+            print(i_epoch) #@@@@@@@@@@@@@@@@@@@@@@@@
+            self._train_epoch(i_epoch)#!!!!!!!!!!!!!!!!
 
             # save model
             print('saving the model at the end of epoch %d, iters %d' % (i_epoch, self._total_steps))
@@ -66,7 +67,7 @@ class Train:
             # train model
             self._model.set_input(train_batch)
             train_generator = ((i_train_batch+1) % self._opt.train_G_every_n_iterations == 0) or do_visuals
-            self._model.optimize_parameters(keep_data_for_visuals=do_visuals, train_generator=train_generator)
+            self._model.optimize_parameters(keep_data_for_visuals=do_visuals, train_generator=train_generator) #!!!!!!!!!!!!!!!!!
 
             # update epoch info
             self._total_steps += self._opt.batch_size

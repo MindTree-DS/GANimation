@@ -20,7 +20,7 @@ def read_cv2_img(path):
 
 def show_cv2_img(img, title='img'):
     '''
-    Display cv2 image
+    Diccsplay cv2 image
     :param img: cv::mat
     :param title: title
     :return: None

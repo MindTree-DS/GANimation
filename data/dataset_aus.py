@@ -17,7 +17,7 @@ class AusDataset(DatasetBase):
         self._read_dataset_paths()
 
     def __getitem__(self, index):
-        assert (index < self._dataset_size)
+        assert (index < self._dataset_size) # assert()함수 : true면 아래로, false면 중단
 
         # start_time = time.time()
         real_img = None
@@ -34,9 +34,9 @@ class AusDataset(DatasetBase):
             real_cond = self._get_cond_by_id(sample_id)
 
             if real_img is None:
-                print 'error reading image %s, skipping sample' % sample_id
+                print ('error reading image %s, skipping sample' % sample_id)
             if real_cond is None:
-                print 'error reading aus %s, skipping sample' % sample_id
+                print ('error reading aus %s, skipping sample' % sample_id)
 
         desired_cond = self._generate_random_cond()
 
@@ -59,7 +59,9 @@ class AusDataset(DatasetBase):
         return self._dataset_size
 
     def _read_dataset_paths(self):
-        self._root = self._opt.data_dir
+        # self._root = self._opt.data_dir
+        # self._root = "C:\HJ\GANimation\mydata_train\p1"
+        self._root = "C:\MindTree\GANimation\sample_dataset"
         self._imgs_dir = os.path.join(self._root, self._opt.images_folder)
 
         # read ids
@@ -96,7 +98,7 @@ class AusDataset(DatasetBase):
 
     def _read_conds(self, file_path):
         with open(file_path, 'rb') as f:
-            return pickle.load(f)
+            return pickle.load(f, encoding='latin1')
 
     def _get_cond_by_id(self, id):
         if id in self._conds:
