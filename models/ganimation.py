@@ -202,18 +202,18 @@ class GANimation(BaseModel):
     def optimize_parameters(self, train_generator=True, keep_data_for_visuals=False):
         if self._is_train:
             # convert tensor to variables
-            print("input_real_img.size : " , (self._input_real_img.size(0))) #@@@@@@@@
+            # print("input_real_img.size : " , (self._input_real_img.size(0))) #@@@@@@@@
             self._B = self._input_real_img.size(0)
 
-            print((len(self._input_real_img))) #@@@@@@@@
+            # print((len(self._input_real_img))) #@@@@@@@@
             # print((self._input_real_img))  # @@@@@@@@
             self._real_img = Variable(self._input_real_img)
 
-            print((len(self._input_real_cond))) #@@@@@@@@
+            # print((len(self._input_real_cond))) #@@@@@@@@
             # print((self._input_real_cond))  # @@@@@@@@
             self._real_cond = Variable(self._input_real_cond)
 
-            print((len(self._input_desired_cond))) #@@@@@@@@
+            # print((len(self._input_desired_cond))) #@@@@@@@@
             # print((self._input_desired_cond))  # @@@@@@@@
             self._desired_cond = Variable(self._input_desired_cond)
 
@@ -232,7 +232,6 @@ class GANimation(BaseModel):
             # train G
             if train_generator:
                 loss_G = self._forward_G(keep_data_for_visuals)
-                breakpoint()
                 self._optimizer_G.zero_grad()
                 loss_G.backward()
                 self._optimizer_G.step()
@@ -341,21 +340,40 @@ class GANimation(BaseModel):
     def get_current_errors(self):
         loss_dict = OrderedDict([('g_fake', self._loss_g_fake.data[0]),
                                  ('g_cond', self._loss_g_cond.data[0]),
-                                 ('g_mskd_fake', self._loss_g_masked_fake.data[0]),
-                                 ('g_mskd_cond', self._loss_g_masked_cond.data[0]),
-                                 ('g_cyc', self._loss_g_cyc.data[0]),
+                                 ('g_mskd_fake', self._loss_g_masked_fake.data.item()),
+                                 ('g_mskd_cond', self._loss_g_masked_cond.data.item()),
+                                 ('g_cyc', self._loss_g_cyc.data.item()),
                                  ('g_rgb', self._loss_rec_real_img_rgb.data[0]),
                                  ('g_rgb_un', self._loss_g_unmasked_rgb.data[0]),
                                  ('g_rgb_s', self._loss_g_fake_imgs_smooth.data[0]),
-                                 ('g_m1', self._loss_g_mask_1.data[0]),
-                                 ('g_m2', self._loss_g_mask_2.data[0]),
-                                 ('g_m1_s', self._loss_g_mask_1_smooth.data[0]),
-                                 ('g_m2_s', self._loss_g_mask_2_smooth.data[0]),
+                                 ('g_m1', self._loss_g_mask_1.data.item()),
+                                 ('g_m2', self._loss_g_mask_2.data.item()),
+                                 ('g_m1_s', self._loss_g_mask_1_smooth.data.item()),
+                                 ('g_m2_s', self._loss_g_mask_2_smooth.data.item()),
                                  ('g_idt', self._loss_g_idt.data[0]),
-                                 ('d_real', self._loss_d_real.data[0]),
-                                 ('d_cond', self._loss_d_cond.data[0]),
-                                 ('d_fake', self._loss_d_fake.data[0]),
-                                 ('d_gp', self._loss_d_gp.data[0])])
+                                 ('d_real', self._loss_d_real.data.item()),
+                                 ('d_cond', self._loss_d_cond.data.item()),
+                                 ('d_fake', self._loss_d_fake.data.item()),
+                                 ('d_gp', self._loss_d_gp.data.item())])
+
+        # 몇개만 [0]-> item()으로 변경함
+        # loss_dict = OrderedDict([('g_fake', self._loss_g_fake.data[0]),
+        #                          ('g_cond', self._loss_g_cond.data[0]),
+        #                          ('g_mskd_fake', self._loss_g_masked_fake.data[0]),
+        #                          ('g_mskd_cond', self._loss_g_masked_cond.data[0]),
+        #                          ('g_cyc', self._loss_g_cyc.data[0]),
+        #                          ('g_rgb', self._loss_rec_real_img_rgb.data[0]),
+        #                          ('g_rgb_un', self._loss_g_unmasked_rgb.data[0]),
+        #                          ('g_rgb_s', self._loss_g_fake_imgs_smooth.data[0]),
+        #                          ('g_m1', self._loss_g_mask_1.data[0]),
+        #                          ('g_m2', self._loss_g_mask_2.data[0]),
+        #                          ('g_m1_s', self._loss_g_mask_1_smooth.data[0]),
+        #                          ('g_m2_s', self._loss_g_mask_2_smooth.data[0]),
+        #                          ('g_idt', self._loss_g_idt.data[0]),
+        #                          ('d_real', self._loss_d_real.data[0]),
+        #                          ('d_cond', self._loss_d_cond.data[0]),
+        #                          ('d_fake', self._loss_d_fake.data[0]),
+        #                          ('d_gp', self._loss_d_gp.data[0])])
 
         return loss_dict
 

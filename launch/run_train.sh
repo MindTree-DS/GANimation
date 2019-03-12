@@ -2,5 +2,5 @@
 
 python train.py \
 --data_dir sample_dataset\imgs \
---name experiment_4 \
+--name experiment_11 \
 --batch_size 2 \

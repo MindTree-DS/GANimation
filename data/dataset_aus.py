@@ -22,7 +22,9 @@ class AusDataset(DatasetBase):
         # start_time = time.time()
         real_img = None
         real_cond = None
-        while real_img is None or real_cond is None:
+
+        # while real_img is None or real_cond is None:
+        while real_img is None or len(real_cond) != 17: #바꿔도 안된다....
             # if sample randomly: overwrite index
             if not self._opt.serial_batches:
                 index = random.randint(0, self._dataset_size - 1)
@@ -39,6 +41,7 @@ class AusDataset(DatasetBase):
                 print ('error reading aus %s, skipping sample' % sample_id)
 
         desired_cond = self._generate_random_cond()
+        print("len(desired_cond) = ",len(desired_cond))#@@@@@@@@@@@ 이부분에서 17말고 0이 나온다는 것 확인
 
         # transform data
         img = self._transform(Image.fromarray(real_img))
@@ -116,4 +119,5 @@ class AusDataset(DatasetBase):
             rand_sample_id = self._ids[random.randint(0, self._dataset_size - 1)]
             cond = self._get_cond_by_id(rand_sample_id)
             cond += np.random.uniform(-0.1, 0.1, cond.shape)
+        # print("cond = ", cond)#@@@@@@@@@여기가 비어있다.
         return cond
