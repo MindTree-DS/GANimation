@@ -41,7 +41,9 @@ class AusDataset(DatasetBase):
                 print ('error reading aus %s, skipping sample' % sample_id)
 
         desired_cond = self._generate_random_cond()
-        print("len(desired_cond) = ",len(desired_cond))#@@@@@@@@@@@ 이부분에서 17말고 0이 나온다는 것 확인
+        # print("len(desired_cond) = ",len(desired_cond))#@@@@@@@@@@@ 이부분에서 17말고 0이 나온다는 것 확인
+        # print("len(real_cond) =" , len(real_cond))#@@@@@@@@@@@
+        # print()#@@@@@@@@@@@
 
         # transform data
         img = self._transform(Image.fromarray(real_img))
@@ -63,7 +65,6 @@ class AusDataset(DatasetBase):
 
     def _read_dataset_paths(self):
         # self._root = self._opt.data_dir
-        # self._root = "C:\HJ\GANimation\mydata_train\p1"
         self._root = "C:\MindTree\GANimation\sample_dataset"
         self._imgs_dir = os.path.join(self._root, self._opt.images_folder)
 
@@ -105,7 +106,7 @@ class AusDataset(DatasetBase):
 
     def _get_cond_by_id(self, id):
         if id in self._conds:
-            return self._conds[id]/5.0
+            return self._conds[id]/5.0 # 이것을 [0,1]로 정규화하기 위해
         else:
             return None
 

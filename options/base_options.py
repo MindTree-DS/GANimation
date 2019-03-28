@@ -19,7 +19,7 @@ class BaseOptions():
         self._parser.add_argument('--image_size', type=int, default=128, help='input image size')
         self._parser.add_argument('--cond_nc', type=int, default=17, help='# of conditions')
         self._parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
-        self._parser.add_argument('--name', type=str, default='experiment_11', help='name of the experiment. It decides where to store samples and models')
+        self._parser.add_argument('--name', type=str, default='experiment_5023', help='name of the experiment. It decides where to store samples and models')
         self._parser.add_argument('--dataset_mode', type=str, default='aus', help='chooses dataset to be used')
         self._parser.add_argument('--model', type=str, default='ganimation', help='model to run[au_net_model]')
         self._parser.add_argument('--n_threads_test', default=1, type=int, help='# threads for loading data')

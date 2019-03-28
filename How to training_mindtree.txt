@@ -1,17 +1,28 @@
-training 시키는 방법
+준비과정
 
 1. open face로 사진을 돌려 얼굴에 대한 csv 파일을 만든다.
 
-2. 사진과 사진에 대한 csv 파일을 함께 GANimation에 넣어준다.
+2. 사진과 사진에 대한 csv 파일을 함께 sample_dataset\imgs에 넣어준다.
 
-3. train_ids.csv 파일에 사진의 이름들을 적어준다.
+3. train_ids.csv, test_ids.csv 파일에 사진의 이름들을 적어준다. (8 : 2)비율
 
-4. dataset_aus.py 64줄 root 바꿔주기
+4. dataset_aus.py 64줄 root 바꿔주기 (self._root = "C:\MindTree\GANimation\sample_dataset")
 
-5. python data/prepare_au_annotations.py --input_aus_filesdir ./sample_dataset/imgs/ --output_path ./sample_dataset 실행
-
-6. bash launch/run_train.sh 실행 ( 그 전에 sh 파일 들어가서 이미지 경로 확인 해주기)
+5. python data/prepare_au_annotations.py --input_aus_filesdir ./sample_dataset/imgs/ --output_path ./sample_dataset 실행 (새로운 이미지를 추가했다면) -> aus.pkl 파일이 생성됨.
 
 
+training 시키는 방법
 
-cm부터 나중에!
+1. run_train.sh 의 5번째 줄 바꾸기 (training 시킬 experiment 이름을 정함)
+
+2. Git Bash : bash launch/run_train.sh 실행
+
+
+test 하는 방법
+
+1. base_option 22번째 줄 (default='experiment_5023') 바꾸기 (test할때 돌릴 experiment 바꾸는 것)
+
+2. cmd : python test.py --input_path ./sample_dataset/imgs/
+
+
+	

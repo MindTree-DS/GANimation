@@ -30,6 +30,13 @@ class MorphFacesInTheWild:
         output_name = '%s_out.png' % os.path.basename(img_path)
         self._save_img(morphed_img, output_name)
 
+    # 17장의 표정 출력해보는 코드
+    # def morph_file(self, img_path, expresion, i):
+    #     img = cv_utils.read_cv2_img(img_path)
+    #     morphed_img = self._img_morph(img, expresion)
+    #     output_name = '%s_out%d.png' % (os.path.basename(img_path), i)
+    #     self._save_img(morphed_img, output_name)
+
 
     def _img_morph(self, img, expresion):
         bbs = face_recognition.face_locations(img)
@@ -67,10 +74,24 @@ def main():
     morph = MorphFacesInTheWild(opt)
 
     image_path = opt.input_path
-    expression = np.random.uniform(0, 1, opt.cond_nc)
+    expression = np.random.uniform(0, 1, opt.cond_nc) # 표정이 랜덤으로 나오는(?)것 같다.
     morph.morph_file(image_path, expression)
 
-
+# 17장의 표정 출력해보는 코드
+# def main():
+#     opt = TestOptions().parse()
+#     if not os.path.isdir(opt.output_dir):
+#         os.makedirs(opt.output_dir)
+#
+#     morph = MorphFacesInTheWild(opt)
+#
+#     image_path = opt.input_path
+#     for i in range(0, opt.cond_nc):
+#         # expression = np.random.uniform(0, 1, opt.cond_nc)
+#         expression = np.zeros((opt.cond_nc,))
+#         expression[i] = 5.0
+#         print(expression)
+#         morph.morph_file(image_path, expression, i)
 
 if __name__ == '__main__':
     main()
